@@ -47,11 +47,11 @@ public class CreateChannel {
      * In the above case the transferfunds.tx should be provided to the client. You can copy it to the project folder: store/channels
      */
     String channelName = StaticConfig.CHANNEL_NAME;
-    String org = "maple";
+    String org = "org1";
     String orderer = StaticConfig.ORDERER;
     String pathToConfigTX = "./store/channels/" + channelName + ".tx";
     CreateChannel create = new CreateChannel();
-    User user = new UserFileSystem("Admin", "maple.funds.com"); 
+    User user = new UserFileSystem("Admin", "org1.example.com"); 
     create.create(orderer, channelName, pathToConfigTX, org, user);
 
   }

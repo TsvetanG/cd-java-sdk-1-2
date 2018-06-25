@@ -174,7 +174,7 @@ public class ChannelUtil {
     }
 
     Properties props = new Properties();
-//    props.setProperty("pemFile", cert.getAbsolutePath());uncomment to enable TLS
+    props.setProperty("pemFile", cert.getAbsolutePath()); //uncomment to enable TLS
     // ret.setProperty("trustServerCertificate", "true"); //testing environment only
     // NOT FOR PRODUCTION!
     props.setProperty("hostnameOverride", name);
