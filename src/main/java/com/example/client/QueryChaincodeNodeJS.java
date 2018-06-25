@@ -38,12 +38,7 @@ import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 
 import com.example.client.impl.ChannelUtil;
-import com.example.client.impl.UserFileSystem;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-
-@RestController
+import com.example.client.impl.UserFileSystem; 
 public class QueryChaincodeNodeJS {
 
   public static void main(String[] args) throws CryptoException, InvalidArgumentException, TransactionException,
@@ -60,27 +55,7 @@ public class QueryChaincodeNodeJS {
     new QueryChaincodeNodeJS().query(params, org , peerName, channelName, chainCode, user);
 
   }
-
-  @RequestMapping(value = "/chaincode/query", method = RequestMethod.GET)
-  public QueryResult executeQuery(@RequestParam(value = "accountHolder") String accountHolder)
-          throws CryptoException, InvalidArgumentException, TransactionException, IOException, ProposalException,
-          InterruptedException, ExecutionException, TimeoutException, IllegalAccessException, InstantiationException,
-          ClassNotFoundException, NoSuchMethodException, InvocationTargetException
-  {
-      String channelName = StaticConfig.CHANNEL_NAME;
-      String chainCode = StaticConfig.CHAIN_CODE_ID;
-      String org = "maple";
-      String peerName = "peer0." + org + ".funds.com";
-      String[] params = new String[] { accountHolder };
-      System.out.println(accountHolder);
-      User user = new UserFileSystem("Admin", org + ".funds.com");
-      QueryResult queryResult = new QueryResult();
-      
-      String result = query(params, org, peerName, channelName, chainCode, user);
-      queryResult.setResponse(result);
-      System.out.println("executed query: result is " + queryResult.getResponse());
-      return queryResult;
-  } 
+ 
 
   public String query(String[] params, String org, String peerName, String channelName, String chainCode, User user)
   throws CryptoException, InvalidArgumentException, TransactionException, IOException, InterruptedException,
@@ -119,9 +94,5 @@ public class QueryChaincodeNodeJS {
     }
     return "";
   }
-
-    @ModelAttribute
-    public void setVaryResponseHeader(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-    }
+ 
 }

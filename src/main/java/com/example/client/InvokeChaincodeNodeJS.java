@@ -24,10 +24,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import javax.servlet.http.HttpServletResponse;
-
+import java.util.concurrent.TimeoutException; 
 import org.hyperledger.fabric.sdk.BlockEvent.TransactionEvent;
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
@@ -40,20 +37,10 @@ import org.hyperledger.fabric.sdk.exception.CryptoException;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
-import org.hyperledger.fabric.sdk.security.CryptoSuite;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.hyperledger.fabric.sdk.security.CryptoSuite; 
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
-
-@RestController
-@CrossOrigin(origins = "*")
+ 
 public class InvokeChaincodeNodeJS {
 
   private static int sleepTime;
@@ -84,32 +71,7 @@ public class InvokeChaincodeNodeJS {
     }
     System.out.println("DONE ->>>>>>>>>>>>>>>");
   }
-
-  @CrossOrigin
-  @RequestMapping(value = "/invokechaincode", method = RequestMethod.POST)
-  @ResponseBody
-  public String invokeMethod(@RequestBody String[] chaincodeParameters)
-      throws CryptoException, InvalidArgumentException, TransactionException, IOException, InterruptedException,
-      ExecutionException, TimeoutException, ProposalException, IllegalAccessException, InstantiationException,
-      ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
-
-    String ops = "transfer";
-    String org = "fundinc";
-    String channelName = StaticConfig.CHANNEL_NAME;
-    String chainCode = StaticConfig.CHAIN_CODE_ID;
-
-    String[] params = chaincodeParameters;
-    String peerName = "peer0.fundinc.funds.com";
-    User user = new UserFileSystem("Admin", "maple.funds.com");
-
-    TransactionEvent event = new InvokeChaincodeNodeJS().invoke(ops, params, org, peerName, channelName, chainCode,
-        user);
-    if (event != null) {
-      // event.getTransactionID().
-    }
-
-    return "Success!";
-  }
+ 
 
   public TransactionEvent invoke(String operation, String[] params, String org, String peerName, String channelName,
       String chainCode, User user) throws CryptoException, InvalidArgumentException, TransactionException, IOException,
@@ -178,9 +140,5 @@ public class InvokeChaincodeNodeJS {
     // Send Transaction Transaction to orderer
     return channel.sendTransaction(successful).get(10000, TimeUnit.SECONDS);
   }
-
-  @ModelAttribute
-  public void setVaryResponseHeader(HttpServletResponse response) {
-    response.setHeader("Access-Control-Allow-Origin", "*");
-  }
+ 
 }
