@@ -48,7 +48,7 @@ public class InstallChaincodeNodeJS {
     String path = "../cd-node-cc";
     String channelName = StaticConfig.CHANNEL_NAME;
     String org = "maple";
-    int version = 22;
+    int version = 1;
     String chaincodeName = StaticConfig.CHAIN_CODE_NODEJS_ID;
     
     String peerName = "peer1." + org + ".funds.com";
