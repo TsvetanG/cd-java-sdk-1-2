@@ -13,7 +13,7 @@
  */
 
 
-package com.example.client;
+package com.example.client.app;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +35,7 @@ import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 
+import com.example.client.StaticConfig;
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
 

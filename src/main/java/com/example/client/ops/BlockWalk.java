@@ -1,4 +1,4 @@
-package com.example.client;
+package com.example.client.ops;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 
+import com.example.client.StaticConfig;
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
 
@@ -29,7 +30,7 @@ public class BlockWalk {
     
     String channelName = StaticConfig.CHANNEL_NAME;
     String org = "maple";
-    User user = new UserFileSystem("Admin", org + ".funds.com");
+    User user = new UserFileSystem("Admin", org + ".example.com");
 
     new BlockWalk().walk(channelName, org, user);
   }

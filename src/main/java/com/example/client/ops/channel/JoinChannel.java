@@ -13,7 +13,7 @@
  *  DO NOT USE IN PROJECTS , NOT for use in production
  */
 
-package com.example.client;
+package com.example.client.ops.channel;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +28,7 @@ import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 
+import com.example.client.StaticConfig;
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
 
@@ -39,14 +40,14 @@ public class JoinChannel {
      * For the correct ports check docker-compose-base.yaml
      */
     String channelName = StaticConfig.CHANNEL_NAME;
-    String org = "maple"; 
-    String portClient = "7051";// for fundinc 9051
-    String portEventHub = "7053"; // for fuindinc 9053
+    String org = "fund"; 
+    String portClient = "9051";// for fundinc 9051
+    String portEventHub = "9053"; // for fuindinc 9053
     
-    String peer = "peer1." + org + ".funds.com:" + StaticConfig.GRPC_HOST + ":" + portClient;
-    String eventHub = "peer1." + org + ".funds.com:" + StaticConfig.GRPC_HOST + ":" + portEventHub;
+    String peer = "peer0." + org + ".example.com:" + StaticConfig.GRPC_HOST + ":" + portClient;
+    String eventHub = "peer0." + org + ".example.com:" + StaticConfig.GRPC_HOST + ":" + portEventHub;
     JoinChannel join = new JoinChannel();
-    User user = new UserFileSystem("Admin", org + ".funds.com"); 
+    User user = new UserFileSystem("Admin", org + ".example.com"); 
     join.join(channelName, peer, eventHub, org, user);
 
   }

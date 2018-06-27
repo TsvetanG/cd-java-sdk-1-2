@@ -12,7 +12,7 @@
  *  DO NOT USE IN PROJECTS , NOT for use in production
  */
 
-package com.example.client;
+package com.example.client.app;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -37,7 +37,9 @@ import org.hyperledger.fabric.sdk.exception.CryptoException;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
-import org.hyperledger.fabric.sdk.security.CryptoSuite; 
+import org.hyperledger.fabric.sdk.security.CryptoSuite;
+
+import com.example.client.StaticConfig;
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
  

@@ -89,18 +89,6 @@ public class CaptureConsent {
     transactionProposalRequest.setChaincodeID(chaincodeID);
     transactionProposalRequest.setFcn(operation);
     transactionProposalRequest.setArgs(params);
-    
-
-    Map<String, byte[]> tm2 = new HashMap<>();
-//    tm2.put("HyperLedgerFabric", "TransactionProposalRequest:JavaSDK".getBytes(UTF_8));
-//    tm2.put("method", "TransactionProposalRequest".getBytes(UTF_8));
-//    tm2.put("result", ":)".getBytes(UTF_8)); /// This should be returned see chaincode.
-//    tm2.put("collection", "collectionMarblePrivateDetails".getBytes(UTF_8));collectionMarbles
-//    tm2.put("collection", "collectionMarbles".getBytes(UTF_8));
-//    tm2.put("amount", "1".getBytes(UTF_8));
-//    tm2.put("toAccount", "bob".getBytes(UTF_8));
-//    tm2.put("fromAccount", "alice".getBytes(UTF_8));
-    transactionProposalRequest.setTransientMap(tm2);
 
     Collection<ProposalResponse> successful = new LinkedList<>();
     Collection<ProposalResponse> failed = new LinkedList<>();

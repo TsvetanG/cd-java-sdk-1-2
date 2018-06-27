@@ -12,7 +12,7 @@
  *  DO NOT USE IN PROJECTS , NOT for use in production
  */
 
-package com.example.client;
+package com.example.client.ops.cc;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import com.example.client.dto.QueryResult;
+import com.example.client.StaticConfig; 
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.HFClient;
@@ -39,7 +39,7 @@ import org.hyperledger.fabric.sdk.security.CryptoSuite;
 
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem; 
-public class QueryChaincodeNodeJS {
+public class QueryChaincode {
 
   public static void main(String[] args) throws CryptoException, InvalidArgumentException, TransactionException,
       IOException, ProposalException, InterruptedException, ExecutionException, TimeoutException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
@@ -52,7 +52,7 @@ public class QueryChaincodeNodeJS {
 //    String[] params = new String[] { "bob", "collectionMarbles" };
     
     User user = new UserFileSystem("Admin", "fundinc" + ".funds.com");
-    new QueryChaincodeNodeJS().query(params, org , peerName, channelName, chainCode, user);
+    new QueryChaincode().query(params, org , peerName, channelName, chainCode, user);
 
   }
  

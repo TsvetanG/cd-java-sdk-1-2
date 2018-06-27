@@ -12,7 +12,7 @@
  *  DO NOT USE IN PROJECTS , NOT for use in production
  */
 
-package com.example.client;
+package com.example.client.ops.cc;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -22,13 +22,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import org.hyperledger.fabric.protos.peer.Query.ChaincodeInfo;
 import org.hyperledger.fabric.sdk.ChaincodeEndorsementPolicy;
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.HFClient;
 import org.hyperledger.fabric.sdk.InstantiateProposalRequest;
+import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.ProposalResponse;
 import org.hyperledger.fabric.sdk.UpgradeProposalRequest;
 import org.hyperledger.fabric.sdk.User;
@@ -39,29 +42,32 @@ import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 
+import com.example.client.StaticConfig;
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
 
-public class InstantiateChaincodeJS {
+public class InstantiateChaincode {
 
 	public static void main(String[] args) throws CryptoException, InvalidArgumentException, IllegalAccessException,
 			InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
 			TransactionException, IOException, ProposalException, ChaincodeEndorsementPolicyParseException {
 
-		String chaincodeName = StaticConfig.CHAIN_CODE_NODEJS_ID;
+		String chaincodeName = "test";
 		String channelName = StaticConfig.CHANNEL_NAME;
-		int version = 1;
 		String org = "maple";
-		boolean isUpgrade = false;
-		InstantiateChaincodeJS instantiate = new InstantiateChaincodeJS();
-		User user = new UserFileSystem("Admin", org + ".funds.com");
-		String[] params = new String[] { "Alice", "500", "Bob", "500" };
-		instantiate.instantiate(chaincodeName, channelName, org, version, user, params, isUpgrade);
+		int version = 0;
+		InstantiateChaincode instantiate = new InstantiateChaincode();
+		User user = new UserFileSystem("Admin", org + ".example.com");
+		String[] params = new String[] {  };
+		instantiate.instantiate(chaincodeName, channelName, org, version, user, params);
 
 	}
 
+  private boolean upgrade;
+  private int version;
+
 	protected void instantiate(String chaincodeName, String channelName, String org, int version, User user,
-			String[] params, boolean isUpgrade)
+			String[] params)
 			throws InvalidArgumentException, TransactionException, IOException, CryptoException, IllegalAccessException,
 			InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
 			ChaincodeEndorsementPolicyParseException, ProposalException {
@@ -76,14 +82,29 @@ public class InstantiateChaincodeJS {
 		Collection<ProposalResponse> successful = new LinkedList<>();
 		Collection<ProposalResponse> failed = new LinkedList<>();
 
-		chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName).setVersion(String.valueOf(version)).build();
-		if (isUpgrade) {
+
+		 
+		//Check if the chaincode is already initialized, if so it is an upgrade
+		for (Peer peer : channel.getPeers()) {
+		  List<ChaincodeInfo> instantiatedCC = channel.queryInstantiatedChaincodes(peer);
+		  
+		  instantiatedCC.stream().filter(item-> item.getName().equals(chaincodeName) ).forEach(item-> { 
+		    int ccVer = Integer.parseInt(item.getVersion());
+		    setUpgrade(true); 
+		    if(getVersion() < ccVer ) { setVersion(++ccVer);}
+		  }); 
+    }
+		if(version != 0) { setVersion(version);}
+		
+    chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName).setVersion(String.valueOf(getVersion())).build();
+		
+		if (isUpgrade()) {
 			UpgradeProposalRequest upgrade = client.newUpgradeProposalRequest();
 			upgrade.setChaincodeID(chaincodeID);
 			upgrade.setProposalWaitTime(60000);
 			upgrade.setFcn("init");
 			upgrade.setChaincodeName(chaincodeName);
-			upgrade.setChaincodeVersion(String.valueOf(version));
+			upgrade.setChaincodeVersion(String.valueOf(getVersion()));
 			Map<String, byte[]> tm = new HashMap<>();
 			tm.put("HyperLedgerFabric", "UpgradeProposalRequest:JavaSDK".getBytes(UTF_8));
 			tm.put("method", "UpgradeProposalRequest".getBytes(UTF_8));
@@ -100,7 +121,7 @@ public class InstantiateChaincodeJS {
 			instantiateProposalRequest.setProposalWaitTime(60000);
 			instantiateProposalRequest.setChaincodeID(chaincodeID);
 			instantiateProposalRequest.setFcn("init");
-			instantiateProposalRequest.setChaincodeVersion(String.valueOf(version));
+			instantiateProposalRequest.setChaincodeVersion(String.valueOf(getVersion()));
 			instantiateProposalRequest.setChaincodeName(chaincodeName);
 
 			instantiateProposalRequest.setArgs(params);
@@ -134,5 +155,21 @@ public class InstantiateChaincodeJS {
 		}
 		System.out.println("DONE=>>>>>>>>>>>>>>>>>>>>>>>>>");
 	}
+
+  protected void setUpgrade(boolean upg) {
+    this.upgrade = upg;
+  }
+  
+  protected boolean isUpgrade() {
+    return upgrade;
+  }
+
+  public int getVersion() {
+    return version;
+  }
+
+  public void setVersion(int version) {
+    this.version = version;
+  }
 
 }

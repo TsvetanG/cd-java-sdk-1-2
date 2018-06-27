@@ -13,14 +13,11 @@
  */
 
 package com.example.client.app;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+ 
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection; 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -74,11 +71,6 @@ public class QueryConsent {
     queryByChaincodeRequest.setFcn("query"); 
     queryByChaincodeRequest.setChaincodeID(chaincodeID);
 
-    Map<String, byte[]> tm2 = new HashMap<>();
-    tm2.put("HyperLedgerFabric", "QueryByChaincodeRequest:JavaSDK".getBytes(UTF_8));
-    tm2.put("method", "QueryByChaincodeRequest".getBytes(UTF_8));
-    tm2.put("collection", "collectionMarblePrivateDetails".getBytes(UTF_8));
-    queryByChaincodeRequest.setTransientMap(tm2);
 
     Collection<ProposalResponse> queryProposals = channel.queryByChaincode(queryByChaincodeRequest, channel.getPeers());
     for (ProposalResponse proposalResponse : queryProposals) {
