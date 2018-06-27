@@ -49,15 +49,21 @@ public class InstallChaincode {
       InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
       TransactionException, IOException, ProposalException, ChaincodeEndorsementPolicyParseException {
 
-    String path = "../cd-node-consentcc";
+
     String channelName = StaticConfig.CHANNEL_NAME;
     String org = "maple";
-    String chaincodeName = "test";
-    int version = 0;
+//  String chaincodeName = "consentcc";
+//  String chaincodeName = "privatecc";
+ String chaincodeName = "publiccc";
+
+    
+    String path = "../cd-node-" + chaincodeName;
+    int version = 24;
     String peerName = null; // "peer0." + org + ".example.com";
     InstallChaincode install = new InstallChaincode();
     User user = new UserFileSystem("Admin", org + ".example.com");
-    install.install(path, org, peerName, channelName, chaincodeName, version, user);
+//    install.install(path, org, peerName, channelName, chaincodeName + org, version, user);
+    install.install(path, org, peerName, channelName, chaincodeName , version, user);
 
   }
 

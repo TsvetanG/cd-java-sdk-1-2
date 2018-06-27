@@ -36,19 +36,20 @@ import org.hyperledger.fabric.sdk.security.CryptoSuite;
 
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem; 
-public class QueryConsent {
+public class QueryPrivateData {
 
   public static void main(String[] args) throws CryptoException, InvalidArgumentException, TransactionException,
       IOException, ProposalException, InterruptedException, ExecutionException, TimeoutException, IllegalAccessException, InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
  
     String channelName =  StaticConfig.CHANNEL_NAME;
-    String chainCode = "consentcc";
+    
     String org = "maple"; //Change this to the next organization to perform the same operation
+    String chainCode = "privatecc" + org;
     String peerName = "peer0." + org + ".example.com";
     String[] params = new String[] { "CL12345"  }; 
 
     User user = new UserFileSystem("Admin", org + ".example.com");
-    new QueryConsent().query(params, org , peerName, channelName, chainCode, user);
+    new QueryPrivateData().query(params, org , peerName, channelName, chainCode, user);
 
   }
  

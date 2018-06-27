@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hyperledger.fabric.protos.peer.Query.ChaincodeInfo;
+import org.hyperledger.fabric.sdk.ChaincodeCollectionConfiguration;
 import org.hyperledger.fabric.sdk.ChaincodeEndorsementPolicy;
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
@@ -35,6 +36,7 @@ import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.ProposalResponse;
 import org.hyperledger.fabric.sdk.UpgradeProposalRequest;
 import org.hyperledger.fabric.sdk.User;
+import org.hyperledger.fabric.sdk.exception.ChaincodeCollectionConfigurationException;
 import org.hyperledger.fabric.sdk.exception.ChaincodeEndorsementPolicyParseException;
 import org.hyperledger.fabric.sdk.exception.CryptoException;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
@@ -50,16 +52,21 @@ public class InstantiateChaincode {
 
 	public static void main(String[] args) throws CryptoException, InvalidArgumentException, IllegalAccessException,
 			InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
-			TransactionException, IOException, ProposalException, ChaincodeEndorsementPolicyParseException {
+			TransactionException, IOException, ProposalException, ChaincodeEndorsementPolicyParseException, ChaincodeCollectionConfigurationException {
 
-		String chaincodeName = "test";
 		String channelName = StaticConfig.CHANNEL_NAME;
 		String org = "maple";
-		int version = 0;
+//  String chaincodeName = "consentcc";
+//  String chaincodeName = "privatecc" + org;
+  String chaincodeName = "publiccc";
+
+		int version = 24;
 		InstantiateChaincode instantiate = new InstantiateChaincode();
 		User user = new UserFileSystem("Admin", org + ".example.com");
 		String[] params = new String[] {  };
-		instantiate.instantiate(chaincodeName, channelName, org, version, user, params);
+		ChaincodeCollectionConfiguration collConf = null;
+//		collConf = ChaincodeCollectionConfiguration.fromYamlFile(new File("./store/collection_"+org+".yaml"));
+		instantiate.instantiate(chaincodeName, channelName, org, version, user, params,collConf);
 
 	}
 
@@ -67,7 +74,7 @@ public class InstantiateChaincode {
   private int version;
 
 	protected void instantiate(String chaincodeName, String channelName, String org, int version, User user,
-			String[] params)
+			String[] params, ChaincodeCollectionConfiguration collConf)
 			throws InvalidArgumentException, TransactionException, IOException, CryptoException, IllegalAccessException,
 			InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
 			ChaincodeEndorsementPolicyParseException, ProposalException {
@@ -85,17 +92,18 @@ public class InstantiateChaincode {
 
 		 
 		//Check if the chaincode is already initialized, if so it is an upgrade
-		for (Peer peer : channel.getPeers()) {
-		  List<ChaincodeInfo> instantiatedCC = channel.queryInstantiatedChaincodes(peer);
-		  
-		  instantiatedCC.stream().filter(item-> item.getName().equals(chaincodeName) ).forEach(item-> { 
-		    int ccVer = Integer.parseInt(item.getVersion());
-		    setUpgrade(true); 
-		    if(getVersion() < ccVer ) { setVersion(++ccVer);}
-		  }); 
-    }
+//		for (Peer peer : channel.getPeers()) {
+//		  List<ChaincodeInfo> instantiatedCC = channel.queryInstantiatedChaincodes(peer);
+//		  
+//		  instantiatedCC.stream().filter(item-> item.getName().equals(chaincodeName) ).forEach(item-> { 
+//		    int ccVer = Integer.parseInt(item.getVersion());
+//		    setUpgrade(true); 
+//		    if(getVersion() < ccVer ) { setVersion(++ccVer);}
+//		  }); 
+//    }
 		if(version != 0) { setVersion(version);}
-		
+		if(version > 1) setUpgrade(true);
+ 
     chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName).setVersion(String.valueOf(getVersion())).build();
 		
 		if (isUpgrade()) {
@@ -104,6 +112,8 @@ public class InstantiateChaincode {
 			upgrade.setProposalWaitTime(60000);
 			upgrade.setFcn("init");
 			upgrade.setChaincodeName(chaincodeName);
+			
+			upgrade.setChaincodeCollectionConfiguration(collConf);
 			upgrade.setChaincodeVersion(String.valueOf(getVersion()));
 			Map<String, byte[]> tm = new HashMap<>();
 			tm.put("HyperLedgerFabric", "UpgradeProposalRequest:JavaSDK".getBytes(UTF_8));
@@ -119,6 +129,7 @@ public class InstantiateChaincode {
 
 			InstantiateProposalRequest instantiateProposalRequest = client.newInstantiationProposalRequest();
 			instantiateProposalRequest.setProposalWaitTime(60000);
+			instantiateProposalRequest.setChaincodeCollectionConfiguration(collConf);
 			instantiateProposalRequest.setChaincodeID(chaincodeID);
 			instantiateProposalRequest.setFcn("init");
 			instantiateProposalRequest.setChaincodeVersion(String.valueOf(getVersion()));
@@ -149,7 +160,8 @@ public class InstantiateChaincode {
 
 		if (failed.size() > 0) {
 			ProposalResponse first = failed.iterator().next();
-		} else {
+		}
+		if(successful.size() > 0) {
 			// send the transaction to ordering
 			channel.sendTransaction(successful);
 		}

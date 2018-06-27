@@ -53,7 +53,7 @@ public class CaptureConsent {
       ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
 
     String channelName = StaticConfig.CHANNEL_NAME;
-    String chainCode = "test";
+    String chainCode = "consentcc";
     String ops = "consent";
     String org = "maple";
     String peerName = "peer0." + org + ".example.com";

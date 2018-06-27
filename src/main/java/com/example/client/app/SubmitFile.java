@@ -53,20 +53,18 @@ public class SubmitFile {
       ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
 
     String channelName = StaticConfig.CHANNEL_NAME;
-    String chainCode = StaticConfig.CHAIN_CODE_NODEJS_ID;
-    String ops = "move";
+    String chainCode = "publiccc";
+    String ops = "pushClientData";
     String org = "maple";
-    String peerName = "peer0." + org + ".funds.com";
-    String[] params = new String[] { };
+    String peerName = "peer0." + org + ".example.com";
+    String[] params = new String[] { "CL12345" , "123" };
 
-    if (args != null && args.length != 0) {
-      params = args;
-      sleepTime = Integer.parseInt(args[0]);
-      sleepTime = sleepTime * 1000;
-    }
-
-    User user = new UserFileSystem("Admin", org + ".funds.com");
-    TransactionEvent event = new SubmitFile().invoke(ops, params, org, peerName, channelName, chainCode,
+    User user = new UserFileSystem("Admin", org + ".example.com");
+    Map<String, byte[]> transMap = new HashMap<String , byte[]>();
+    transMap.put("public", "{ \"name\":\"John\", \"age\":31, \"city\":\"New York\" }".getBytes(UTF_8) );
+    transMap.put("private", "{ \"condition\":\"GOOD\" }".getBytes(UTF_8) );
+    
+    TransactionEvent event = new SubmitFile().invoke(ops, params, transMap,  org, peerName, channelName, chainCode,
         user);
     if (event != null) {
       // event.getTransactionID().
@@ -75,7 +73,7 @@ public class SubmitFile {
   }
  
 
-  public TransactionEvent invoke(String operation, String[] params, String org, String peerName, String channelName,
+  public TransactionEvent invoke(String operation, String[] params, Map<String, byte[]> transMap, String org, String peerName, String channelName,
       String chainCode, User user) throws CryptoException, InvalidArgumentException, TransactionException, IOException,
       InterruptedException, ExecutionException, TimeoutException, ProposalException, IllegalAccessException,
       InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
@@ -94,18 +92,8 @@ public class SubmitFile {
     transactionProposalRequest.setChaincodeID(chaincodeID);
     transactionProposalRequest.setFcn(operation);
     transactionProposalRequest.setArgs(params);
-    
 
-    Map<String, byte[]> tm2 = new HashMap<>();
-//    tm2.put("HyperLedgerFabric", "TransactionProposalRequest:JavaSDK".getBytes(UTF_8));
-//    tm2.put("method", "TransactionProposalRequest".getBytes(UTF_8));
-//    tm2.put("result", ":)".getBytes(UTF_8)); /// This should be returned see chaincode.
-//    tm2.put("collection", "collectionMarblePrivateDetails".getBytes(UTF_8));collectionMarbles
-    tm2.put("collection", "collectionMarbles".getBytes(UTF_8));
-    tm2.put("amount", "1".getBytes(UTF_8));
-    tm2.put("toAccount", "bob".getBytes(UTF_8));
-    tm2.put("fromAccount", "alice".getBytes(UTF_8));
-    transactionProposalRequest.setTransientMap(tm2);
+    transactionProposalRequest.setTransientMap(transMap);
 
     Collection<ProposalResponse> successful = new LinkedList<>();
     Collection<ProposalResponse> failed = new LinkedList<>();
@@ -122,6 +110,7 @@ public class SubmitFile {
 
     if (failed.size() > 0) {
       ProposalResponse firstTransactionProposalResponse = failed.iterator().next();
+      System.out.println("Failure!");
       return null;
     }
 
