@@ -48,7 +48,7 @@ import com.example.client.StaticConfig;
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
 
-public class InstantiateChaincode {
+public class InstantiatePrvChaincode {
 
 	public static void main(String[] args) throws CryptoException, InvalidArgumentException, IllegalAccessException,
 			InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
@@ -57,15 +57,15 @@ public class InstantiateChaincode {
 		String channelName = StaticConfig.CHANNEL_NAME;
 		String org = "maple";
 //  String chaincodeName = "consentcc";
-//  String chaincodeName = "privatecc" + org;
-  String chaincodeName = "publiccc";
+  String chaincodeName = "privatecc" + org;
+//  String chaincodeName = "publiccc";
 
-		int version = 32;
-		InstantiateChaincode instantiate = new InstantiateChaincode();
+		int version = 11;
+		InstantiatePrvChaincode instantiate = new InstantiatePrvChaincode();
 		User user = new UserFileSystem("Admin", org + ".example.com");
 		String[] params = new String[] {  };
 		ChaincodeCollectionConfiguration collConf = null;
-//		collConf = ChaincodeCollectionConfiguration.fromYamlFile(new File("./store/collection_"+org+".yaml"));
+		collConf = ChaincodeCollectionConfiguration.fromYamlFile(new File("./store/collection_"+org+".yaml"));
 		instantiate.instantiate(chaincodeName, channelName, org, version, user, params,collConf);
 
 	}

@@ -43,7 +43,7 @@ import com.example.client.StaticConfig;
 import com.example.client.impl.ChannelUtil;
 import com.example.client.impl.UserFileSystem;
 
-public class InstallChaincode {
+public class InstallPrvChaincode {
 
   public static void main(String[] args) throws CryptoException, InvalidArgumentException, IllegalAccessException,
       InstantiationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
@@ -53,17 +53,17 @@ public class InstallChaincode {
     String channelName = StaticConfig.CHANNEL_NAME;
     String org = "maple";
 //  String chaincodeName = "consentcc";
-//  String chaincodeName = "privatecc";
- String chaincodeName = "publiccc";
+  String chaincodeName = "privatecc";
+// String chaincodeName = "publiccc";
 
     
     String path = "../cd-node-" + chaincodeName;
-    int version = 32;
+    int version = 11;
     String peerName = null; // "peer0." + org + ".example.com";
-    InstallChaincode install = new InstallChaincode();
+    InstallPrvChaincode install = new InstallPrvChaincode();
     User user = new UserFileSystem("Admin", org + ".example.com");
-//    install.install(path, org, peerName, channelName, chaincodeName + org, version, user);
-    install.install(path, org, peerName, channelName, chaincodeName , version, user);
+    install.install(path, org, peerName, channelName, chaincodeName + org, version, user);
+//    install.install(path, org, peerName, channelName, chaincodeName , version, user);
 
   }
 

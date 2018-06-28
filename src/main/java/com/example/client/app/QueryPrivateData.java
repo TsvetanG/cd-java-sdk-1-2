@@ -46,7 +46,7 @@ public class QueryPrivateData {
     String org = "maple"; //Change this to the next organization to perform the same operation
     String chainCode = "privatecc" + org;
     String peerName = "peer0." + org + ".example.com";
-    String[] params = new String[] { "CL12345"  }; 
+    String[] params = new String[] { "CL12345", "123"  }; 
 
     User user = new UserFileSystem("Admin", org + ".example.com");
     new QueryPrivateData().query(params, org , peerName, channelName, chainCode, user);

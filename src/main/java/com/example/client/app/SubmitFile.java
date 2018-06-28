@@ -62,7 +62,7 @@ public class SubmitFile {
     User user = new UserFileSystem("Admin", org + ".example.com");
     Map<String, byte[]> transMap = new HashMap<String , byte[]>();
     transMap.put("public", "{ \"name\":\"John\", \"age\":31, \"city\":\"New York\" }".getBytes(UTF_8) );
-    transMap.put("private", "{ \"condition\":\"GOOD\" }".getBytes(UTF_8) );
+    transMap.put("private", "{ \"condition\":\"GO5OD\" }".getBytes(UTF_8) );
     
     TransactionEvent event = new SubmitFile().invoke(ops, params, transMap,  org, peerName, channelName, chainCode,
         user);
