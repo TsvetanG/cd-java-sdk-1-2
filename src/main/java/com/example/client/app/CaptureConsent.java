@@ -60,7 +60,7 @@ public class CaptureConsent {
     String[] params = new String[] { "CL12345" };
  
 
-    User user = new UserFileSystem("Admin", org + ".example.com");
+    User user = new UserFileSystem("Admin", "fund" + ".example.com");
     TransactionEvent event = new CaptureConsent().invoke(ops, params, org, peerName, channelName, chainCode,
         user);
     if (event != null) {

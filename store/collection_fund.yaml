@@ -1,10 +1,11 @@
-- StaticCollectionConfig: 
-  name: coll
-  SignaturePolicyEnvelope: 
-    identities: 
-      - user1: {"role": {"name": "member", "mspId": "fund"}}
-    policy:
-      1-of:
-      - signed-by: user1
-  requiredPeerCount: 1
-  maxPeerCount: 2
+  - StaticCollectionConfig: 
+      name: coll
+      SignaturePolicyEnvelope: 
+        identities: 
+          - user1: {"role": {"name": "member", "mspId": "fund"}}
+        policy:
+          1-of:
+            - signed-by: user1
+      requiredPeerCount: 1
+      maximumPeerCount: 2
+      blockToLive: 1000000

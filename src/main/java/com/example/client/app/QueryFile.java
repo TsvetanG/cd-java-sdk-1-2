@@ -49,7 +49,7 @@ public class QueryFile {
     String[] params = new String[] { "CL12345" ,"123" }; 
 
     User user = new UserFileSystem("Admin", org + ".example.com");
-    String result =  new QueryPrivateData().query(params, org , peerName, channelName, chainCode, user);
+    String result =  new QueryFile().query(params, org , peerName, channelName, chainCode, user);
 
   }
  

@@ -53,24 +53,27 @@ public class CopyFile {
       ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
 
     String channelName = StaticConfig.CHANNEL_NAME;
-    String chainCode = StaticConfig.CHAIN_CODE_NODEJS_ID;
-    String ops = "move";
-    String org = "maple";
-    String peerName = "peer0." + org + ".funds.com";
-    String[] params = new String[] { };
 
-    if (args != null && args.length != 0) {
-      params = args;
-      sleepTime = Integer.parseInt(args[0]);
-      sleepTime = sleepTime * 1000;
-    }
+    String[] params = new String[] { "CL12345" ,"123" };
 
-    User user = new UserFileSystem("Admin", org + ".funds.com");
-    TransactionEvent event = new CopyFile().invoke(ops, params, org, peerName, channelName, chainCode,
+    User user = new UserFileSystem("Admin", "fund.example.com");
+    
+    
+    String query =  new QueryPrivateData().query(params, "maple" , "peer0.maple.example.com", channelName, "privateccmaple", user);
+    
+    System.out.println("Query result: " + query);
+    
+    Map<String, byte[]> transMap = new HashMap<String , byte[]>();
+    transMap.put("private", "{ \"condition\":\"GO5OD\" }".getBytes(UTF_8) );
+    
+    TransactionEvent event = new SubmitFile().invoke("pushClientData", new String[] { "CL12345" , "123" } , transMap,  "fund", "peer0.fund.example.com", channelName, "publiccc",
         user);
     if (event != null) {
       // event.getTransactionID().
     }
+    query =  new QueryPrivateData().query(params, "fund" , "peer0.fund.example.com", channelName, "privateccfund", user);
+    
+    System.out.println("Query result: " + query);
     System.out.println("DONE ->>>>>>>>>>>>>>>");
   }
  

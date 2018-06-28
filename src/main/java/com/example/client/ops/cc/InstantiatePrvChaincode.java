@@ -55,12 +55,12 @@ public class InstantiatePrvChaincode {
 			TransactionException, IOException, ProposalException, ChaincodeEndorsementPolicyParseException, ChaincodeCollectionConfigurationException {
 
 		String channelName = StaticConfig.CHANNEL_NAME;
-		String org = "maple";
+		String org = "fund";
 //  String chaincodeName = "consentcc";
   String chaincodeName = "privatecc" + org;
 //  String chaincodeName = "publiccc";
 
-		int version = 11;
+		int version = 1;
 		InstantiatePrvChaincode instantiate = new InstantiatePrvChaincode();
 		User user = new UserFileSystem("Admin", org + ".example.com");
 		String[] params = new String[] {  };

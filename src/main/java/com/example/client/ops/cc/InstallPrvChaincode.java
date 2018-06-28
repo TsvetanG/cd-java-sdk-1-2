@@ -51,14 +51,14 @@ public class InstallPrvChaincode {
 
 
     String channelName = StaticConfig.CHANNEL_NAME;
-    String org = "maple";
+    String org = "fund";
 //  String chaincodeName = "consentcc";
   String chaincodeName = "privatecc";
 // String chaincodeName = "publiccc";
 
     
     String path = "../cd-node-" + chaincodeName;
-    int version = 11;
+    int version = 1;
     String peerName = null; // "peer0." + org + ".example.com";
     InstallPrvChaincode install = new InstallPrvChaincode();
     User user = new UserFileSystem("Admin", org + ".example.com");
