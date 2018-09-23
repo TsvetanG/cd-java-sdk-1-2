@@ -4,8 +4,7 @@ FROM openjdk:8-jdk-alpine
 # Add Maintainer Info
 MAINTAINER Tsvetan Georgiev<tsvetan.georgiev@gmail.com>
 
-# Add a volume pointing to /tmp
-VOLUME /tmp
+RUN mkdir -p /tmp/crypto
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080

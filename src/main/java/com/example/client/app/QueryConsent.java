@@ -77,7 +77,8 @@ public class QueryConsent {
       if (!proposalResponse.isVerified() || proposalResponse.getStatus() != ProposalResponse.Status.SUCCESS) {
        
       } else {
-        String payload = proposalResponse.getProposalResponse().getResponse().getPayload().toStringUtf8();
+        String payload = "" ;//proposalResponse.getProposalResponse().
+//            getProposalResponse().getResponse().getPayload().toStringUtf8();
         System.out.println("Result > " + payload);
         return payload;
         

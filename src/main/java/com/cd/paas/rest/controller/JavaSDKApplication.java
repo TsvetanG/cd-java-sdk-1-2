@@ -1,4 +1,4 @@
-package com.example.client;
+package com.cd.paas.rest.controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

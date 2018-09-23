@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.hyperledger.fabric.protos.ledger.rwset.kvrwset.KvRwset;
 import org.hyperledger.fabric.sdk.BlockInfo;
 import org.hyperledger.fabric.sdk.BlockchainInfo;
 import org.hyperledger.fabric.sdk.Channel;
@@ -48,54 +47,54 @@ public class BlockWalk {
     BlockchainInfo channelInfo = channel.queryBlockchainInfo();
 
     System.err.println("Blocks height " + channelInfo.getHeight());
+//
+//    for (int i = 0; i < channelInfo.getHeight(); i++) {
+//      BlockInfo returnedBlock = channel.queryBlockByNumber(i);
+//      long blockNumber = returnedBlock.getBlockNumber();
+//      System.out.println("Block number : " + blockNumber);
+//      for (BlockInfo.EnvelopeInfo envelope : returnedBlock.getEnvelopeInfos()) {
+//        if (envelope.getType() == BlockInfo.EnvelopeType.TRANSACTION_ENVELOPE) {
+//          BlockInfo.TransactionEnvelopeInfo transactionEnvelopeInfo = (BlockInfo.TransactionEnvelopeInfo) envelope;
+//          for (BlockInfo.TransactionEnvelopeInfo.TransactionActionInfo trActionInfo : transactionEnvelopeInfo
+//              .getTransactionActionInfos()) {
+//            for (int counter = 0; counter < trActionInfo.getChaincodeInputArgsCount(); ++counter) {
+//              System.out
+//                  .println("Transaction info >>" + new String(trActionInfo.getChaincodeInputArgs(counter), "UTF-8"));
+//
+//            }
+//
+//            TxReadWriteSetInfo readWriteSet = trActionInfo.getTxReadWriteSet();
+//            if (readWriteSet != null) {
+//              for (TxReadWriteSetInfo.NsRwsetInfo nsRwsetInfo : readWriteSet.getNsRwsetInfos()) {
+//                String namespace = nsRwsetInfo.getNamespace();
+//                KvRwset.KVRWSet rws = nsRwsetInfo.getRwset();
+//
+//                System.out.println("Read Set");
+//                for (KvRwset.KVRead readList : rws.getReadsList()) {
+//                  System.out.println("Read Set Key: " + readList.getKey() + "version[] : "
+//                      + readList.getVersion().getBlockNum() + ":" + readList.getVersion().getTxNum());
+//
+//                }
+//                System.out.println("Read Set END");
+//                System.out.println("Write Set");
+//                for (KvRwset.KVWrite writeList : rws.getWritesList()) {
+//
+//                  String valAsString = new String(writeList.getValue().toByteArray(), "UTF-8");
+//
+//                  System.out.println("Key: Value " + writeList.getKey() + ":" + valAsString );
+//
+//                }
+//                System.out.println("Write Set END");
+//              }
+//
+//            }
+//
+//            System.out.println("ProposalResponse: " + new String(trActionInfo.getProposalResponsePayload()));
+//          }
+//        }
+//      }
 
-    for (int i = 0; i < channelInfo.getHeight(); i++) {
-      BlockInfo returnedBlock = channel.queryBlockByNumber(i);
-      long blockNumber = returnedBlock.getBlockNumber();
-      System.out.println("Block number : " + blockNumber);
-      for (BlockInfo.EnvelopeInfo envelope : returnedBlock.getEnvelopeInfos()) {
-        if (envelope.getType() == BlockInfo.EnvelopeType.TRANSACTION_ENVELOPE) {
-          BlockInfo.TransactionEnvelopeInfo transactionEnvelopeInfo = (BlockInfo.TransactionEnvelopeInfo) envelope;
-          for (BlockInfo.TransactionEnvelopeInfo.TransactionActionInfo trActionInfo : transactionEnvelopeInfo
-              .getTransactionActionInfos()) {
-            for (int counter = 0; counter < trActionInfo.getChaincodeInputArgsCount(); ++counter) {
-              System.out
-                  .println("Transaction info >>" + new String(trActionInfo.getChaincodeInputArgs(counter), "UTF-8"));
-
-            }
-
-            TxReadWriteSetInfo readWriteSet = trActionInfo.getTxReadWriteSet();
-            if (readWriteSet != null) {
-              for (TxReadWriteSetInfo.NsRwsetInfo nsRwsetInfo : readWriteSet.getNsRwsetInfos()) {
-                String namespace = nsRwsetInfo.getNamespace();
-                KvRwset.KVRWSet rws = nsRwsetInfo.getRwset();
-
-                System.out.println("Read Set");
-                for (KvRwset.KVRead readList : rws.getReadsList()) {
-                  System.out.println("Read Set Key: " + readList.getKey() + "version[] : "
-                      + readList.getVersion().getBlockNum() + ":" + readList.getVersion().getTxNum());
-
-                }
-                System.out.println("Read Set END");
-                System.out.println("Write Set");
-                for (KvRwset.KVWrite writeList : rws.getWritesList()) {
-
-                  String valAsString = new String(writeList.getValue().toByteArray(), "UTF-8");
-
-                  System.out.println("Key: Value " + writeList.getKey() + ":" + valAsString );
-
-                }
-                System.out.println("Write Set END");
-              }
-
-            }
-
-            System.out.println("ProposalResponse: " + new String(trActionInfo.getProposalResponsePayload()));
-          }
-        }
-      }
-
-    }
+//    }
 
   }
 

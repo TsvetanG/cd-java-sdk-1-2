@@ -37,18 +37,21 @@ public class UserFileSystem implements User  {
   }
 
   protected String getPkFile(String uName, String org) throws IOException { 
-    File folder = new File("." + getPathToMSP(uName, org) , "keystore");
+    File folder = new File( getPathToMSP(uName, org) , "keystore");
     File[] files = folder.listFiles();
     return files[0].getCanonicalPath();
   }
 
   private String getPathToMSP(String uName, String org) {
-    return "/store/crypto-config/peerOrganizations/" + org + "/users/" + uName + "@" + org + "/msp";
+    String path  = "/tmp/crypto/crypto-config/peerOrganizations/" + org + "/users/" + uName + "@" + org + "/msp";
+    System.out.println(">>>>" + path);
+    System.out.println("<<<" + new File(path).exists());
+    return path;
 
   }
 
   protected String getCertFile(String uName, String org) throws IOException {
-    File folder = new File(new File("." + getPathToMSP(uName, org)) , "signcerts");
+    File folder = new File(new File( getPathToMSP(uName, org)) , "signcerts");
     File[] files = folder.listFiles();
     return files[0].getCanonicalPath();
   }

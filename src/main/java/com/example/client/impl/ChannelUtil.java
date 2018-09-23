@@ -19,6 +19,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -29,10 +32,13 @@ import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.ChannelConfiguration;
 import org.hyperledger.fabric.sdk.EventHub;
 import org.hyperledger.fabric.sdk.HFClient;
+import org.hyperledger.fabric.sdk.NetworkConfig;
 import org.hyperledger.fabric.sdk.Orderer;
 import org.hyperledger.fabric.sdk.Peer;
+import org.hyperledger.fabric.sdk.Peer.PeerRole;
 import org.hyperledger.fabric.sdk.User;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric.sdk.exception.NetworkConfigurationException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 
 public class ChannelUtil {
@@ -47,28 +53,84 @@ public class ChannelUtil {
    * 
    * @param channelName
    * @param client
- * @param isJoin 
+   * @param isJoin
    * @param org
    * @return
    * @throws TransactionException
    * @throws InvalidArgumentException
+   * @throws IOException
+   * @throws NetworkConfigurationException
    */
-  protected Channel reconstructChannel(String channelName, HFClient client, List<Peer> peers, List<Orderer> orderers,
-      List<EventHub> hubs, boolean isJoin) throws InvalidArgumentException, TransactionException {
+  public Channel reconstructChannel(String channelName, HFClient client)
+      throws InvalidArgumentException, TransactionException, NetworkConfigurationException, IOException {
 
-    Channel channel = client.newChannel(channelName);
+    // Channel channel = client.newChannel(channelName);
+    String path = System.getenv("CD_CFG_PATH");
+    System.out.println("CD config path: " + path);
+    if (path == null) {
+      path = "/tmp/crypto";
+    }
+    String peerName = "anchor";
+    String peerURL = "ec2-54-197-157-158.compute-1.amazonaws.com:4251";
+    // Channel cahnnel = client.newChannel(channelName);
 
-    for (Orderer orderer : orderers) { // add remaining orderers if any.
-      channel.addOrderer(orderer);
-    }
- 
-    for (EventHub hub : hubs) {
-      channel.addEventHub(hub);
-    }
-    for (Peer peer : peers) {
-      channel.addPeer(peer);
-    }  
-    if(!isJoin) channel.initialize();
+    Properties properties = getProps("peer", "anchormaple.maple.com");
+    Peer discoveryPeer = client.newPeer("anchormaple", "grpcs://" + peerURL, properties);
+    Channel channel = client.newChannel("transfer"); // create channel that will be discovered.
+
+    channel.addPeer(discoveryPeer, Channel.PeerOptions.createPeerOptions().setPeerRoles(EnumSet
+        .of(PeerRole.SERVICE_DISCOVERY, PeerRole.LEDGER_QUERY, PeerRole.EVENT_SOURCE, PeerRole.CHAINCODE_QUERY)));
+
+    Properties sdprops = new Properties();
+    sdprops.put("org.hyperledger.fabric.sdk.discovery.default.clientCertFile",
+        path + "/crypto-config/peerOrganizations/maple.com/users/Admin@maple.com/tls/client.crt");
+    sdprops.put("org.hyperledger.fabric.sdk.discovery.default.clientKeyFile",
+        path + "/crypto-config/peerOrganizations/maple.com/users/Admin@maple.com/tls/client.key");
+
+    // Need to do host name override for true tls in testing environment
+    // sdprops.put("org.hyperledger.fabric.sdk.discovery.endpoint.hostnameOverride.localhost:7050",
+    // "orderer.example.com");
+    // sdprops.put("org.hyperledger.fabric.sdk.discovery.endpoint.hostnameOverride.localhost:7051",
+    // "peer0.org1.example.com");
+    // sdprops.put("org.hyperledger.fabric.sdk.discovery.endpoint.hostnameOverride.localhost:7056",
+    // "peer1.org1.example.com");
+    channel.setServiceDiscoveryProperties(sdprops);
+    channel.initialize();
+   Collection<String> ccnames =   channel.getDiscoveredChaincodeNames();
+   for (Iterator iterator = ccnames.iterator(); iterator.hasNext();) {
+    String string = (String) iterator.next();
+    System.out.println("CC" + string);
+    
+  }
+   Collection<Orderer> orderers = channel.getOrderers();
+   for (Iterator iterator = orderers.iterator(); iterator.hasNext();) {
+    Orderer orderer = (Orderer) iterator.next();
+    System.out.println("Orderer " + orderer.getUrl());
+    
+  }
+   Collection<Peer> peers = channel.getPeers();
+   for (Iterator iterator = peers.iterator(); iterator.hasNext();) {
+    Peer peer = (Peer) iterator.next();
+    System.out.println(peer.getName() + "<Peer " + peer.getUrl());
+    
+    
+  }
+    // NetworkConfig config = NetworkConfig.fromJsonFile(new File(path +
+    // "/con_config.json"));
+    // Channel channel = client.loadChannelFromConfig(channelName, config);
+    //
+    //
+    // for (Orderer orderer : orderers) { // add remaining orderers if any.
+    // channel.addOrderer(orderer);
+    // }
+    //
+    // for (EventHub hub : hubs) {
+    // channel.addEventHub(hub);
+    // }
+    // for (Peer peer : peers) {
+    // channel.addPeer(peer);
+    // }
+    // if(!isJoin) channel.initialize();
 
     return channel;
 
@@ -88,8 +150,8 @@ public class ChannelUtil {
     List<EventHub> hubs = new ArrayList<EventHub>();
 
     add(org, peerName, client, props, peers, orderers, hubs);
-
-    return reconstructChannel(channelName, client, peers, orderers, hubs, false);
+    return null;
+//    return reconstructChannel(channelName, client, peers, orderers, hubs, false);
   }
 
   public Channel reconstructChannel(String org, String channelName, HFClient client, boolean isJoin)
@@ -106,13 +168,13 @@ public class ChannelUtil {
     List<EventHub> hubs = new ArrayList<EventHub>();
 
     add(org, null, client, props, peers, orderers, hubs);
-
-    return reconstructChannel(channelName, client, peers, orderers, hubs, isJoin);
+return null;
+//    return reconstructChannel(channelName, client, peers, orderers, hubs, isJoin);
   }
-  
+
   public Channel reconstructChannel(String org, String channelName, HFClient client)
-	      throws IOException, InvalidArgumentException, TransactionException {
-	  return reconstructChannel(org, channelName, client, false);
+      throws IOException, InvalidArgumentException, TransactionException {
+    return reconstructChannel(org, channelName, client, false);
   }
 
   protected void add(String org, String peerName, HFClient client, Properties props, List<Peer> peers,
@@ -161,12 +223,15 @@ public class ChannelUtil {
 
   protected Properties getProps(String type, String name) {
     String orgName = getOrgName(name);
+    name = name.substring(0, name.indexOf("."));
+    System.out.println("NAME " + name);
+    System.out.println("ORGNAME " + orgName);
     File cert = null;
     if ("peer".equals(type)) {
-      cert = new File("./store/crypto-config/peerOrganizations/" + orgName + "/peers/" + name + "/tls/server.crt");
+      cert = new File("/tmp/crypto/crypto-config/peerOrganizations/" + orgName + "/peers/" + name + "/tls/server.crt");
     } else {
       cert = new File(
-          "./store/crypto-config/ordererOrganizations/" + orgName + "/orderers/" + name + "/tls/server.crt");
+          "/tmp/crypto/crypto-config/ordererOrganizations/" + orgName + "/orderers/" + name + "/tls/server.crt");
     }
 
     if (!cert.exists()) {
@@ -174,7 +239,7 @@ public class ChannelUtil {
     }
 
     Properties props = new Properties();
-    props.setProperty("pemFile", cert.getAbsolutePath()); //uncomment to enable TLS
+    props.setProperty("pemFile", cert.getAbsolutePath()); // uncomment to enable TLS
     // ret.setProperty("trustServerCertificate", "true"); //testing environment only
     // NOT FOR PRODUCTION!
     props.setProperty("hostnameOverride", name);

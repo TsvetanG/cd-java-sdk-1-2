@@ -82,16 +82,16 @@ public class QueryChaincode {
     queryByChaincodeRequest.setTransientMap(tm2);
 
     Collection<ProposalResponse> queryProposals = channel.queryByChaincode(queryByChaincodeRequest, channel.getPeers());
-    for (ProposalResponse proposalResponse : queryProposals) {
-      if (!proposalResponse.isVerified() || proposalResponse.getStatus() != ProposalResponse.Status.SUCCESS) {
-       
-      } else {
-        String payload = proposalResponse.getProposalResponse().getResponse().getPayload().toStringUtf8();
-        System.out.println("Result > " + payload);
-        return payload;
-        
-      }
-    }
+//    for (ProposalResponse proposalResponse : queryProposals) {
+//      if (!proposalResponse.isVerified() || proposalResponse.getStatus() != ProposalResponse.Status.SUCCESS) {
+//       
+//      } else {
+//        String payload = proposalResponse.getProposalResponse().getResponse().getPayload().toStringUtf8();
+//        System.out.println("Result > " + payload);
+//        return payload;
+//        
+//      }
+//    }
     return "";
   }
  
