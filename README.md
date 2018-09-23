@@ -4,3 +4,9 @@ Fabric java sdk example
 The code inside is for educational purposes only. Do not copy or use for any production ready software. No legal warranties.
 
 All rights reserved @ChainDigit Inc
+
+-> mvn install
+-> mvn package
+
+-> docker build -t cd-client .
+-> docker run -p 5000:8080
